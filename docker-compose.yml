@@ -1,17 +1,29 @@
 version: "3.9"
 
 services:
+  go-app:
+    container_name: go-app
+    build: .
+    image: go-rest-api-teste
+    ports:
+      - "8000:8000"
+    depends_on:
+      - go_db
+    restart: always
+
   go_db:
     container_name: go_db
-    image: postgres:12
+    image: postgres:15-alpine
     environment:
       POSTGRES_PASSWORD: senhateste
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
     ports:
-      - "5433:5433"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-  
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    restart: always
+
 volumes:
-  pgdata: {}
+  pgdata:
